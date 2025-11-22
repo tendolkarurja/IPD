@@ -22,7 +22,7 @@ const User = new mongoose.Schema(
 
         carDetails:{
             type: Object,
-            require: function() { return this.isDriver; },
+            required: function() { return this.isDriver; }, // Required only if user is a driver
             default: null
         },
 

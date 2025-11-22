@@ -1,19 +1,21 @@
 const mongoose = require('mongoose');
 
-const GeoJsonPointSchema = {
+// Define the GeoJSON Point schema as a separate, explicit Mongoose Schema
+const PointSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ['Point'], 
-        required: true
+        required: true,
+        default: 'Point'
     },
-   
     coordinates: {
-        type: [Number],
+        type: [Number], // [longitude, latitude]
         required: true,
     }
-};
+}, { _id: false });
 
-const Location = new mongoose.Schema(
+
+const LocationSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -27,9 +29,11 @@ const Location = new mongoose.Schema(
             trim: true,
         },
 
+        // This field holds the GeoJSON Point data
         location: {
-            type: GeoJsonPointSchema,
-            required: true,
+            // Correctly reference the schema structure defined above
+            type: PointSchema,
+            required: true, // This makes the entire 'location' field mandatory
         },
     },
     {
@@ -37,5 +41,7 @@ const Location = new mongoose.Schema(
     }
 );
 
-Location.index({ location: '2dsphere' });
-module.exports = mongoose.model('Location', Location);
+// Explicitly define the 2dsphere index on the 'location' field.
+LocationSchema.index({ location: '2dsphere' });
+
+module.exports = mongoose.model('Location', LocationSchema);

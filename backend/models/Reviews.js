@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ReviewSchema = new mongoose.Schema(
+const Review = new mongoose.Schema(
     {
         targetUserId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -40,4 +40,6 @@ const ReviewSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('Review', ReviewSchema);
+// Prevent duplicate reviews for same ride/user combination
+Review.index({ rideId: 1, reviewerId: 1, targetUserId: 1 }, { unique: true });
+module.exports = mongoose.model('Review', Review);
